@@ -18,7 +18,11 @@ export default async function Home() {
     await supabase.from("posts").insert([
       { image }
     ])
+  
+    revalidatePath("/")
+    
   }
+  
 
   return (
     <main style={{padding:40}}>
