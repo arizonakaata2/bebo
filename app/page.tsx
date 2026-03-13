@@ -80,19 +80,36 @@ export default async function Home() {
       gap:20
     }}>
       {posts?.map((post) => (
-        <div key={post.id} style={{
-          background:"#1a1a1a",
-          borderRadius:10,
-          overflow:"hidden",
-          border:"1px solid #333"
-        }}>
-          <img src={post.image} style={{
-            width:"100%",
-            display:"block"
-          }} />
-        </div>
-      ))}
+  <div key={post.id} style={{
+    background:"#1a1a1a",
+    borderRadius:10,
+    overflow:"hidden",
+    border:"1px solid #333",
+    padding:10
+  }}>
 
-  </main>
-)
-}
+    <img src={post.image} style={{
+      width:"100%",
+      display:"block",
+      marginBottom:10
+    }} />
+
+    <form action={async () => {
+      "use server"
+      await likePost(post.id, post.likes ?? 0)
+      revalidatePath("/")
+    }}>
+      <button style={{
+        background:"#ff4d6d",
+        border:"none",
+        padding:"6px 12px",
+        borderRadius:6,
+        color:"white",
+        cursor:"pointer"
+      }}>
+        ❤️ {post.likes ?? 0}
+      </button>
+    </form>
+
+  </div>
+))}
