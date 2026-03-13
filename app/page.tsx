@@ -1,146 +1,50 @@
-import { supabase } from "../lib/supabase"
-import { revalidatePath } from "next/cache"
-
-export const dynamic = "force-dynamic"
-
-export default async function Home() {
-
-  const { data: posts } = await supabase
-    .from("posts")
-    .select("*")
-    .order("created_at", { ascending: false })
-
-  const { data: comments } = await supabase
-  .from("comments")
-  .select("*")
-  .order("created_at", { ascending: true })
-  
-  async function createPost(formData: FormData) {
-    "use server"
-
-    const image = formData.get("image")
-
-    await supabase.from("posts").insert([
-      { image }
-    ])
-  
-    revalidatePath("/")
-    
-  }
-
-  async function likePost(id: number, likes: number) {
-  "use server"
-
-  await supabase
-    .from("posts")
-    .update({ likes: likes + 1 })
-    .eq("id", id)
-}
-  
+export default function Page() {
+  const posts = [
+    { id: 1, image: "https://picsum.photos/400/300", likes: 3 },
+    { id: 2, image: "https://picsum.photos/400/301", likes: 7 },
+  ]
 
   return (
-  <main style={{
-    padding:40,
-    background:"#0f0f0f",
-    minHeight:"100vh",
-    color:"white",
-    fontFamily:"Arial"
-  }}>
-    
-    <h1 style={{fontSize:32, marginBottom:20}}>Bebo Feed 🚀</h1>
+    <main style={{ padding: 20 }}>
+      <h1>Bebo Feed</h1>
 
-    <form action={createPost} style={{
-      display:"flex",
-      gap:10,
-      marginBottom:40
-    }}>
-      <input
-        name="image"
-        placeholder="Paste image URL..."
+      <div
         style={{
-          padding:10,
-          flex:1,
-          borderRadius:6,
-          border:"1px solid #333",
-          background:"#1a1a1a",
-          color:"white"
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))",
+          gap: 20,
         }}
-      />
+      >
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            style={{
+              border: "1px solid #333",
+              padding: 10,
+              borderRadius: 10,
+            }}
+          >
+            <img
+              src={post.image}
+              style={{ width: "100%", borderRadius: 6 }}
+            />
 
-      <button style={{
-        padding:"10px 20px",
-        borderRadius:6,
-        border:"none",
-        background:"#4f46e5",
-        color:"white",
-        cursor:"pointer"
-      }}>
-        Post
-      </button>
-    </form>
-
-    <div style={{
-      display:"grid",
-      gridTemplateColumns:"repeat(auto-fill, minmax(300px, 1fr))",
-      gap:20
-    }}>
-      {posts?.map((post) => (
-  <div key={post.id} style={{
-    background:"#1a1a1a",
-    borderRadius:10,
-    overflow:"hidden",
-    border:"1px solid #333",
-    padding:10
-  }}>
-
-   <img
-  src={post.image}
-  onDoubleClick={async () => {
-    "use server"
-    await likePost(post.id, post.likes ?? 0)
-    revalidatePath("/")
-  }}
-  style={{
-    width:"100%",
-    display:"block",
-    marginBottom:10,
-    cursor:"pointer"
-  }}
-/> 
-
-<form action={async () => {
-  "use server"
-  await likePost(post.id, post.likes ?? 0)
-  revalidatePath("/")
-}}>
-  <button style={{
-    background:"#ff4d6d",
-    border:"none",
-    padding:"6px 12px",
-    borderRadius:6,
-    color:"white",
-    cursor:"pointer"
-  }}>
-❤️ {post.likes ?? 0}
-  </button>
-</form>
-    
-    <div style={{marginTop:10}}>
-  {comments
-    ?.filter((c) => c.post_id === post.id)
-    .map((c) => (
-      <div key={c.id} style={{
-        background:"#111",
-        padding:"6px 8px",
-        borderRadius:6,
-        marginTop:4,
-        fontSize:14
-      }}>
-        {c.text}
+            <button
+              style={{
+                marginTop: 10,
+                padding: "6px 10px",
+                background: "#444",
+                color: "white",
+                border: "none",
+                borderRadius: 6,
+              }}
+            >
+              ❤️ {post.likes}
+            </button>
+          </div>
+        ))}
       </div>
-  ))}
-</div>
-    ))}
-   </div>
-  </main>
-}  
+    </main>
+  )
+}
+   
