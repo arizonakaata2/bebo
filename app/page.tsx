@@ -10,6 +10,11 @@ export default async function Home() {
     .select("*")
     .order("created_at", { ascending: false })
 
+  const { data: comments } = await supabase
+  .from("comments")
+  .select("*")
+  .order("created_at", { ascending: true })
+  
   async function createPost(formData: FormData) {
     "use server"
 
