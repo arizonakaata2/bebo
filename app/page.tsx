@@ -111,6 +111,5 @@ export default async function Home() {
   </button>
 </form>
 
-    
   </div>
 ))}
