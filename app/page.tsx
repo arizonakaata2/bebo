@@ -22,6 +22,15 @@ export default async function Home() {
     revalidatePath("/")
     
   }
+
+  async function likePost(id: number, likes: number) {
+  "use server"
+
+  await supabase
+    .from("posts")
+    .update({ likes: likes + 1 })
+    .eq("id", id)
+}
   
 
   return (
