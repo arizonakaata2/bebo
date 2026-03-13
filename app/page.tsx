@@ -1,4 +1,10 @@
+'use client'
+
+import { signIn, signOut, useSession } from "next-auth/react"
+
 export default function Page() {
+  const { data: session } = useSession()
+
   const posts = [
     { id: 1, image: "https://picsum.photos/400/300", likes: 3 },
     { id: 2, image: "https://picsum.photos/400/301", likes: 7 },
@@ -6,45 +12,70 @@ export default function Page() {
 
   return (
     <main style={{ padding: 20 }}>
-      <h1>Bebo Feed</h1>
+      <h1>Bebo</h1>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))",
-          gap: 20,
-        }}
-      >
-        {posts.map((post) => (
-          <div
-            key={post.id}
+      {!session ? (
+        <button
+          onClick={() => signIn("github")}
+          style={{
+            padding: "10px 16px",
+            background: "#333",
+            color: "white",
+            border: "none",
+            borderRadius: 6,
+            cursor: "pointer"
+          }}
+        >
+          Login with GitHub
+        </button>
+      ) : (
+        <>
+          <p>Welcome {session.user?.name}</p>
+
+          <button
+            onClick={() => signOut()}
             style={{
-              border: "1px solid #333",
-              padding: 10,
-              borderRadius: 10,
+              padding: "6px 12px",
+              marginBottom: 20
             }}
           >
-            <img
-              src={post.image}
-              style={{ width: "100%", borderRadius: 6 }}
-            />
+            Logout
+          </button>
 
-            <button
-              style={{
-                marginTop: 10,
-                padding: "6px 10px",
-                background: "#444",
-                color: "white",
-                border: "none",
-                borderRadius: 6,
-              }}
-            >
-              ❤️ {post.likes}
-            </button>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))",
+              gap: 20
+            }}
+          >
+            {posts.map(post => (
+              <div
+                key={post.id}
+                style={{
+                  border: "1px solid #333",
+                  borderRadius: 10,
+                  padding: 10
+                }}
+              >
+                <img
+                  src={post.image}
+                  style={{ width: "100%", borderRadius: 6 }}
+                />
+
+                <button
+                  style={{
+                    marginTop: 10,
+                    padding: "6px 10px"
+                  }}
+                >
+                  ❤️ {post.likes}
+                </button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </main>
   )
 }
-   
