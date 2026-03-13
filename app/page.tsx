@@ -2,11 +2,6 @@ import { supabase } from "../lib/supabase"
 
 export default async function Home() {
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-
   const { data: posts } = await supabase
     .from("posts")
     .select("*")
