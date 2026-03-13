@@ -4,86 +4,59 @@ import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 
 export default function Home() {
+  const [posts, setPosts] = useState<any[]>([])
+  const [content, setContent] = useState("")
 
-  const [session, setSession] = useState<any>(null)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  async function getPosts() {
+    const { data } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+
+    setPosts(data || [])
+  }
+
+  async function createPost() {
+    if (!content) return
+
+    const user = await supabase.auth.getUser()
+
+    await supabase.from("posts").insert({
+      content,
+      user_id: user.data.user?.id
+    })
+
+    setContent("")
+    getPosts()
+  }
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-    })
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session)
-      }
-    )
-
-    return () => listener.subscription.unsubscribe()
+    getPosts()
   }, [])
 
-  const signUp = async () => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password
-    })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      alert("Signup successful. Check your email.")
-    }
-  }
-
-  const signIn = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-
-    if (error) {
-      alert(error.message)
-    }
-  }
-
-  const logout = async () => {
-    await supabase.auth.signOut()
-  }
-
-  if (!session) {
-    return (
-      <div style={{ padding: 40 }}>
-        <h1>BEBO</h1>
-
-        <input
-          placeholder="Email"
-          onChange={(e)=>setEmail(e.target.value)}
-        />
-
-        <br/><br/>
-
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e)=>setPassword(e.target.value)}
-        />
-
-        <br/><br/>
-
-        <button onClick={signUp}>Sign Up</button>
-        <button onClick={signIn}>Login</button>
-      </div>
-    )
-  }
-
   return (
-    <div style={{ padding: 40 }}>
-      <h1>Welcome to BEBO 🎉</h1>
+    <div style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
+      <h1>BEBO Feed</h1>
 
-      <p>You are logged in.</p>
+      <textarea
+        placeholder="What's happening?"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        style={{ width: "100%", padding: 10 }}
+      />
 
-      <button onClick={logout}>Logout</button>
+      <button onClick={createPost} style={{ marginTop: 10 }}>
+        Post
+      </button>
+
+      <hr />
+
+      {posts.map((post) => (
+        <div key={post.id} style={{ marginBottom: 20 }}>
+          <p>{post.content}</p>
+          <small>{post.created_at}</small>
+        </div>
+      ))}
     </div>
   )
 }
