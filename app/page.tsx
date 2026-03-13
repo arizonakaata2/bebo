@@ -5,6 +5,10 @@ import { signIn, signOut, useSession } from "next-auth/react"
 export default function Page() {
   const { data: session, status } = useSession()
 
+  if (status === "loading") {
+    return <div>Loading...</div>
+  }
+
   const posts = [
     { id: 1, image: "https://picsum.photos/400/300", likes: 3 },
     { id: 2, image: "https://picsum.photos/400/301", likes: 7 },
