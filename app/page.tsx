@@ -24,7 +24,7 @@ export default async function Home() {
 
   return (
     <main style={{padding:40}}>
-      <h1>Bebo Feed</h1>
+      <h1>Bebo Feed 🚀</h1>
 
       <form action={createPost}>
         <input name="image" placeholder="Image URL" />
