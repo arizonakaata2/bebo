@@ -3,8 +3,7 @@
 import { signIn, signOut, useSession } from "next-auth/react"
 
 export default function Page() {
-  const sessionData = useSession()
-const session = sessionData?.data
+  const { data: session, status } = useSession()
 
   const posts = [
     { id: 1, image: "https://picsum.photos/400/300", likes: 3 },
