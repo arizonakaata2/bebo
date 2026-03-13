@@ -1,85 +1,59 @@
-'use client'
+"use client"
 
-import { signIn, signOut, useSession } from "next-auth/react"
+import { useState } from "react"
+import { supabase } from "../lib/supabaseClient"
 
-export default function Page() {
-  const { data: session, status } = useSession()
+export default function Home() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
 
-  if (status === "loading") {
-    return <div>Loading...</div>
+  const signUp = async () => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      alert("Signup successful! Check your email.")
+    }
   }
 
-  const posts = [
-    { id: 1, image: "https://picsum.photos/400/300", likes: 3 },
-    { id: 2, image: "https://picsum.photos/400/301", likes: 7 },
-  ]
+  const signIn = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      alert("Logged in!")
+    }
+  }
 
   return (
-    <main style={{ padding: 20 }}>
-      <h1>Bebo</h1>
+    <div style={{ padding: 40 }}>
+      <h1>BEBO</h1>
 
-      {!session ? (
-        <button
-          onClick={() => signIn("github")}
-          style={{
-            padding: "10px 16px",
-            background: "#333",
-            color: "white",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer"
-          }}
-        >
-          Login with GitHub
-        </button>
-      ) : (
-        <>
-          <p>Welcome {session.user?.name}</p>
+      <input
+        placeholder="email"
+        onChange={(e) => setEmail(e.target.value)}
+      />
 
-          <button
-            onClick={() => signOut()}
-            style={{
-              padding: "6px 12px",
-              marginBottom: 20
-            }}
-          >
-            Logout
-          </button>
+      <br /><br />
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))",
-              gap: 20
-            }}
-          >
-            {posts.map(post => (
-              <div
-                key={post.id}
-                style={{
-                  border: "1px solid #333",
-                  borderRadius: 10,
-                  padding: 10
-                }}
-              >
-                <img
-                  src={post.image}
-                  style={{ width: "100%", borderRadius: 6 }}
-                />
+      <input
+        type="password"
+        placeholder="password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-                <button
-                  style={{
-                    marginTop: 10,
-                    padding: "6px 10px"
-                  }}
-                >
-                  ❤️ {post.likes}
-                </button>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </main>
+      <br /><br />
+
+      <button onClick={signUp}>Sign Up</button>
+      <button onClick={signIn}>Sign In</button>
+    </div>
   )
 }
