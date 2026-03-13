@@ -10,7 +10,7 @@ export default function Home() {
   async function getPosts() {
     const { data } = await supabase
       .from("posts")
-      .select("*, profiles(username)")
+      .select("*, profiles(username), likes(count)")
       .order("created_at", { ascending: false })
 
     setPosts(data || [])
@@ -30,73 +30,52 @@ export default function Home() {
     getPosts()
   }
 
+  async function likePost(postId:any) {
+    const user = await supabase.auth.getUser()
+
+    await supabase.from("likes").insert({
+      post_id: postId,
+      user_id: user.data.user?.id
+    })
+
+    getPosts()
+  }
+
   useEffect(() => {
     getPosts()
   }, [])
 
   return (
-    <div style={{
-      maxWidth: 600,
-      margin: "auto",
-      padding: 20,
-      fontFamily: "Arial"
-    }}>
+    <div style={{maxWidth:600,margin:"auto",padding:20,fontFamily:"Arial"}}>
       
-      <h1 style={{marginBottom:20}}>BEBO</h1>
+      <h1>BEBO</h1>
 
-      <div style={{
-        border:"1px solid #333",
-        padding:15,
-        marginBottom:20
-      }}>
-        <textarea
-          placeholder="What's happening?"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          style={{
-            width:"100%",
-            padding:10,
-            background:"#111",
-            color:"white",
-            border:"1px solid #333"
-          }}
-        />
+      <textarea
+        placeholder="What's happening?"
+        value={content}
+        onChange={(e)=>setContent(e.target.value)}
+        style={{width:"100%",padding:10}}
+      />
 
-        <button
-          onClick={createPost}
-          style={{
-            marginTop:10,
-            padding:"8px 20px",
-            background:"#2563eb",
-            color:"white",
-            border:"none",
-            cursor:"pointer"
-          }}
-        >
-          Post
-        </button>
-      </div>
+      <button onClick={createPost} style={{marginTop:10}}>
+        Post
+      </button>
 
-      {posts.map((post) => (
-        <div
-          key={post.id}
-          style={{
-            border:"1px solid #333",
-            padding:15,
-            marginBottom:10
-          }}
-        >
+      <hr/>
+
+      {posts.map((post)=>(
+        <div key={post.id} style={{marginBottom:20}}>
+
           <strong>
             @{post.profiles?.username || "user"}
           </strong>
 
-          <p style={{marginTop:5}}>
-            {post.content}
-          </p>
+          <p>{post.content}</p>
 
-          <small style={{color:"#888"}}>
-            {new Date(post.created_at).toLocaleString()}
-          </small>
+          <button onClick={()=>likePost(post.id)}>
+            ❤️ Like ({post.likes?.[0]?.count || 0})
+          </button>
+
         </div>
       ))}
     </div>
