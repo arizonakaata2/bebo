@@ -122,6 +122,21 @@ export default async function Home() {
     cursor:"pointer"
   }}>
     ❤️ {post.likes ?? 0}
+    <div style={{marginTop:10}}>
+  {comments
+    ?.filter((c) => c.post_id === post.id)
+    .map((c) => (
+      <div key={c.id} style={{
+        background:"#111",
+        padding:"6px 8px",
+        borderRadius:6,
+        marginTop:4,
+        fontSize:14
+      }}>
+        {c.text}
+      </div>
+  ))}
+</div>
   </button>
 </form>
 
