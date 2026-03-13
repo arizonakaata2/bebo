@@ -110,23 +110,7 @@ export default async function Home() {
     ❤️ {post.likes ?? 0}
   </button>
 </form>
-    
-    <form action={async () => {
-      "use server"
-      await likePost(post.id, post.likes ?? 0)
-      revalidatePath("/")
-    }}>
-      <button style={{
-        background:"#ff4d6d",
-        border:"none",
-        padding:"6px 12px",
-        borderRadius:6,
-        color:"white",
-        cursor:"pointer"
-      }}>
-        ❤️ {post.likes ?? 0}
-      </button>
-    </form>
 
+    
   </div>
 ))}
