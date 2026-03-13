@@ -40,11 +40,11 @@ export default function RootLayout({
         </header>
 
         {/* Page Content */}
-        <SessionProvider>
-        <main>
-          {children}
-        </main>
-          </SessionProvider>
+        <Providers>
+  <main>
+    {children}
+  </main>
+</Providers>
 
       </body>
     </html>
