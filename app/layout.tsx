@@ -42,9 +42,11 @@ export default function RootLayout({
         </header>
 
         {/* Page Content */}
+        <sessionprovider>
         <main>
           {children}
         </main>
+          </sessionprovider>
 
       </body>
     </html>
