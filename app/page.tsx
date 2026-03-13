@@ -122,6 +122,9 @@ export default async function Home() {
     cursor:"pointer"
   }}>
     ❤️ {post.likes ?? 0}
+  </button>
+</form>
+    
     <div style={{marginTop:10}}>
   {comments
     ?.filter((c) => c.post_id === post.id)
