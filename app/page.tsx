@@ -88,11 +88,20 @@ export default async function Home() {
     padding:10
   }}>
 
-    <img src={post.image} style={{
-      width:"100%",
-      display:"block",
-      marginBottom:10
-    }} />
+   <img
+  src={post.image}
+  onDoubleClick={async () => {
+    "use server"
+    await likePost(post.id, post.likes ?? 0)
+    revalidatePath("/")
+  }}
+  style={{
+    width:"100%",
+    display:"block",
+    marginBottom:10,
+    cursor:"pointer"
+  }}
+/> 
 
 <form action={async () => {
   "use server"
