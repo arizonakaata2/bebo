@@ -121,7 +121,7 @@ export default async function Home() {
     color:"white",
     cursor:"pointer"
   }}>
-  </button>
+
     ❤️ {post.likes ?? 0}
   </button>
 </form>
