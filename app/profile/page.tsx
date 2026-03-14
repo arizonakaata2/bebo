@@ -4,14 +4,15 @@ import { useState } from "react";
 export default function Home() {
   const [posts, setPosts] = useState<string[]>([]);
   const [text, setText] = useState("");
+  
+function addPost() {
+  alert("Button clicked");
 
-  function addPost() {
-    if (text.trim() === "") return;
+  if (text.trim() === "") return;
 
-    setPosts((prev) => [text, ...prev]);
-    setText("");
-  }
-
+  setPosts((prev) => [text, ...prev]);
+  setText("");
+}
   return (
     <div style={{ padding: 40 }}>
       <h1>BEBO Feed</h1>
