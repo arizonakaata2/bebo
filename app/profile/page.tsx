@@ -33,6 +33,14 @@ export default function Home() {
 
 function Post({ text }: { text: string }) {
   const [likes, setLikes] = useState(0);
+  const [comments, setComments] = useState<string[]>([]);
+  const [commentText, setCommentText] = useState("");
+
+  const addComment = () => {
+    if (!commentText) return;
+    setComments([...comments, commentText]);
+    setCommentText("");
+  };
 
   return (
     <div style={{border:"1px solid #333", padding:20, marginTop:20}}>
@@ -42,6 +50,19 @@ function Post({ text }: { text: string }) {
       <button onClick={() => setLikes(likes + 1)}>
         ❤️ Like ({likes})
       </button>
+
+      <div style={{marginTop:15}}>
+        <input
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+          placeholder="Write a comment..."
+        />
+        <button onClick={addComment}>Comment</button>
+
+        {comments.map((c, i) => (
+          <p key={i}>💬 {c}</p>
+        ))}
+      </div>
     </div>
   );
 }
