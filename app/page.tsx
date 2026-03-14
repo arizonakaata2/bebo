@@ -64,17 +64,6 @@ export default function Home() {
     getPosts()
   }, [])
 
-  return (
-    <div style={{maxWidth:600,margin:"auto",padding:20,fontFamily:"Arial"}}>
-      
-      <h1>BEBO</h1>
-
-      <textarea
-        placeholder="What's happening?"
-        value={content}
-        onChange={(e)=>setContent(e.target.value)}
-        style={{width:"100%",padding:10}}
-      />
 
       <button onClick={createPost} style={{marginTop:10}}>
         Post
