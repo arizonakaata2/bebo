@@ -18,10 +18,16 @@ export default function RootLayout({ children }) {
           }}>
             <h2>BEBO</h2>
 
-            <p>Home</p>
-            <p>Explore</p>
-            <p>Profile</p>
-            <p>Messages</p>
+            <a href="/">Home</a>
+<br/><br/>
+
+<a href="/profile">Profile</a>
+<br/><br/>
+
+<a href="#">Explore</a>
+<br/><br/>
+
+<a href="#">Messages</a>
           </div>
 
           {/* Main Feed */}
