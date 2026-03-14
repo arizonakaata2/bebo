@@ -3,36 +3,31 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../lib/supabaseClient"
 
-export default function Profile() {
+export default function Profile(){
 
   const [user,setUser] = useState<any>(null)
   const [followers,setFollowers] = useState(0)
+  const [following,setFollowing] = useState(0)
 
   async function loadProfile(){
 
-    const {data:userData} = await supabase.auth.getUser()
+    const {data} = await supabase.auth.getUser()
+    const currentUser = data.user
 
-    setUser(userData.user)
+    setUser(currentUser)
 
-    const {count} = await supabase
+    const {count:followersCount} = await supabase
       .from("follows")
       .select("*",{count:"exact",head:true})
-      .eq("following",userData.user?.id)
+      .eq("following",currentUser?.id)
 
-    setFollowers(count || 0)
+    const {count:followingCount} = await supabase
+      .from("follows")
+      .select("*",{count:"exact",head:true})
+      .eq("follower",currentUser?.id)
 
-  }
-
-  async function followUser(){
-
-    const {data:userData} = await supabase.auth.getUser()
-
-    await supabase.from("follows").insert({
-      follower:userData.user?.id,
-      following:userData.user?.id
-    })
-
-    loadProfile()
+    setFollowers(followersCount || 0)
+    setFollowing(followingCount || 0)
 
   }
 
@@ -40,22 +35,19 @@ export default function Profile() {
     loadProfile()
   },[])
 
-  return (
+  return(
 
     <div>
 
       <h1>Profile</h1>
 
-      <p>User ID:</p>
+      <p><strong>User ID:</strong></p>
       <small>{user?.id}</small>
 
-      <p style={{marginTop:20}}>
-        Followers: {followers}
-      </p>
+      <hr/>
 
-      <button onClick={followUser}>
-        Follow
-      </button>
+      <p>Followers: {followers}</p>
+      <p>Following: {following}</p>
 
     </div>
 
