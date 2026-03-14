@@ -1,53 +1,37 @@
-import "./globals.css";
-import Providers from "./providers";
-
-
-export const metadata = {
-  title: "Bebo",
-  description: "Next generation social network"
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body style={{margin:0, background:"#000", color:"#fff", fontFamily:"Arial"}}>
+    <html>
+      <body style={{background:"#000",color:"white",fontFamily:"Arial"}}>
         
-        {/* Top Bar */}
-        <header style={{
-          display:"flex",
-          justifyContent:"space-between",
-          alignItems:"center",
-          padding:"15px 30px",
-          borderBottom:"1px solid #222"
+        <div style={{
+          display:"grid",
+          gridTemplateColumns:"250px 1fr",
+          maxWidth:"1200px",
+          margin:"auto"
         }}>
-          <h2 style={{
-            background:"linear-gradient(90deg,#9333ea,#06b6d4)",
-            WebkitBackgroundClip:"text",
-            color:"transparent"
+
+          {/* Sidebar */}
+          <div style={{
+            borderRight:"1px solid #222",
+            padding:20,
+            height:"100vh"
           }}>
-            BEBO
-          </h2>
+            <h2>BEBO</h2>
 
-          <nav style={{display:"flex", gap:"20px"}}>
-            <a href="/" style={{color:"white", textDecoration:"none"}}>Home</a>
-            <a href="#" style={{color:"white", textDecoration:"none"}}>Explore</a>
-            <a href="#" style={{color:"white", textDecoration:"none"}}>Messages</a>
-            <a href="#" style={{color:"white", textDecoration:"none"}}>Profile</a>
-          </nav>
-        </header>
+            <p>Home</p>
+            <p>Explore</p>
+            <p>Profile</p>
+            <p>Messages</p>
+          </div>
 
-        {/* Page Content */}
-        <Providers>
-  <main>
-    {children}
-  </main>
-</Providers>
+          {/* Main Feed */}
+          <div style={{padding:20}}>
+            {children}
+          </div>
+
+        </div>
 
       </body>
     </html>
-  );
+  )
 }
