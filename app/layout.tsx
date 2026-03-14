@@ -1,43 +1,15 @@
-export default function RootLayout({ children }) {
+import React from "react";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html>
-      <body style={{background:"#000",color:"white",fontFamily:"Arial"}}>
-        
-        <div style={{
-          display:"grid",
-          gridTemplateColumns:"250px 1fr",
-          maxWidth:"1200px",
-          margin:"auto"
-        }}>
-
-          {/* Sidebar */}
-          <div style={{
-            borderRight:"1px solid #222",
-            padding:20,
-            height:"100vh"
-          }}>
-            <h2>BEBO</h2>
-
-            <a href="/">Home</a>
-<br/><br/>
-
-<a href="/profile">Profile</a>
-<br/><br/>
-
-<a href="#">Explore</a>
-<br/><br/>
-
-<a href="#">Messages</a>
-          </div>
-
-          {/* Main Feed */}
-          <div style={{padding:20}}>
-            {children}
-          </div>
-
-        </div>
-
+      <body style={{ background: "#000", color: "white", fontFamily: "Arial" }}>
+        {children}
       </body>
     </html>
-  )
+  );
 }
