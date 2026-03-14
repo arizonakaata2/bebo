@@ -1,57 +1,16 @@
-"use client";
-import { useState } from "react";
-
-export default function Home() {
-  const [posts, setPosts] = useState<string[]>([]);
-  const [text, setText] = useState("");
-  
-function addPost() {
-  alert("Button clicked");
-
-  if (text.trim() === "") return;
-
-  setPosts((prev) => [text, ...prev]);
-  setText("");
-}
+export default function Profile() {
   return (
     <div style={{ padding: 40 }}>
-      <h1>BEBO Feed</h1>
+      <h1>Arizona's Profile</h1>
 
-      <div style={{ marginBottom: 20 }}>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="What's happening?"
-          rows={3}
-          style={{
-            width: 500,
-            padding: 10,
-            display: "block",
-            marginBottom: 10,
-            background: "#111",
-            color: "white",
-            border: "1px solid #444"
-          }}
-        />
+      <img
+        src="https://placehold.co/120"
+        style={{ borderRadius: "50%", marginTop: 20 }}
+      />
 
-        <button onClick={addPost}>Post</button>
-      </div>
-
-      {posts.length === 0 && <p>No posts yet.</p>}
-
-      {posts.map((post, i) => (
-        <div
-          key={i}
-          style={{
-            border: "1px solid #333",
-            padding: 20,
-            marginTop: 20
-          }}
-        >
-          <h3>Arizona</h3>
-          <p>{post}</p>
-        </div>
-      ))}
+      <p style={{ marginTop: 20 }}>
+        Welcome to your profile page.
+      </p>
     </div>
   );
 }
