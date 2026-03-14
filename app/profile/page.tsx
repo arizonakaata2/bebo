@@ -6,7 +6,7 @@ export default function Home() {
   const [text, setText] = useState("");
 
   const addPost = () => {
-    if (!text) return;
+    if (!text.trim()) return;
     setPosts([text, ...posts]);
     setText("");
   };
@@ -15,56 +15,25 @@ export default function Home() {
     <div style={{ padding: 40 }}>
       <h1>BEBO Feed</h1>
 
-      <input
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="What's happening?"
-        style={{ marginRight: 10 }}
-      />
-
-      <button onClick={addPost}>Post</button>
-
-      {posts.map((post, i) => (
-        <Post key={i} text={post} />
-      ))}
-    </div>
-  );
-}
-
-function Post({ text }: { text: string }) {
-  const [likes, setLikes] = useState<number>(0);
-  const [comments, setComments] = useState<string[]>([]);
-  const [commentText, setCommentText] = useState("");
-
-  const addComment = () => {
-    if (!commentText) return;
-    setComments([...comments, commentText]);
-    setCommentText("");
-  };
-
-  return (
-    <div style={{ border: "1px solid #333", padding: 20, marginTop: 20 }}>
-      <h3>Arizona</h3>
-
-      <p>{text}</p>
-
-      <button onClick={() => setLikes(likes + 1)}>
-        ❤️ Like ({likes})
-      </button>
-
-      <div style={{ marginTop: 15 }}>
+      <div style={{ marginBottom: 20 }}>
         <input
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          placeholder="Write a comment..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="What's happening?"
+          style={{ width: 400, marginRight: 10 }}
         />
 
-        <button onClick={addComment}>Comment</button>
-
-        {comments.map((c, i) => (
-          <p key={i}>💬 {c}</p>
-        ))}
+        <button onClick={addPost}>Post</button>
       </div>
+
+      {posts.length === 0 && <p>No posts yet.</p>}
+
+      {posts.map((post, i) => (
+        <div key={i} style={{border:"1px solid #333", padding:20, marginTop:20}}>
+          <h3>Arizona</h3>
+          <p>{post}</p>
+        </div>
+      ))}
     </div>
   );
 }
