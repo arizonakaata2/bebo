@@ -38,7 +38,26 @@ export default function Home() {
       user_id: user.data.user?.id
     })
 
-    getPosts()
+    async function getPosts(){
+
+  const {data:userData} = await supabase.auth.getUser()
+
+  const {data:follows} = await supabase
+    .from("follows")
+    .select("following")
+    .eq("follower",userData.user?.id)
+
+  const followingIds = follows?.map(f => f.following) || []
+
+  const {data} = await supabase
+    .from("posts")
+    .select("*")
+    .in("user_id",followingIds)
+    .order("created_at",{ascending:false})
+
+  setPosts(data || [])
+
+}
   }
 
   useEffect(() => {
