@@ -1,126 +1,57 @@
 "use client";
-import { useState } from "react";
 
-type PostType = {
-  text: string;
-  likes: number;
-  comments: string[];
-};
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 export default function Home() {
-  const [posts, setPosts] = useState<PostType[]>([]);
-  const [text, setText] = useState("");
+  const [posts, setPosts] = useState<any[]>([]);
+  const [image, setImage] = useState("");
 
-  function addPost() {
-    if (text.trim() === "") return;
+  async function loadPosts() {
+    const { data } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-    const newPost: PostType = {
-      text,
-      likes: 0,
-      comments: []
-    };
-
-    setPosts([newPost, ...posts]);
-    setText("");
+    if (data) setPosts(data);
   }
 
-  function likePost(index: number) {
-    const updated = [...posts];
-    updated[index].likes += 1;
-    setPosts(updated);
+  async function addPost() {
+    if (!image) return;
+
+    await supabase.from("posts").insert([
+      {
+        image: image,
+      },
+    ]);
+
+    setImage("");
+    loadPosts();
   }
 
-  function addComment(index: number, comment: string) {
-    if (!comment.trim()) return;
-
-    const updated = [...posts];
-    updated[index].comments.push(comment);
-    setPosts(updated);
-  }
+  useEffect(() => {
+    loadPosts();
+  }, []);
 
   return (
     <div style={{ padding: 40 }}>
       <h1>BEBO Feed</h1>
 
-      <div style={{ marginBottom: 20 }}>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="What's happening?"
-          rows={3}
-          style={{
-            width: 500,
-            padding: 10,
-            display: "block",
-            marginBottom: 10
-          }}
-        />
+      <input
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+        placeholder="Image URL..."
+        style={{ width: 300, marginRight: 10 }}
+      />
 
-        <button onClick={addPost}>Post</button>
-      </div>
+      <button onClick={addPost}>Post</button>
 
-      {posts.length === 0 && <p>No posts yet.</p>}
-
-      {posts.map((post, i) => (
-        <Post
-          key={i}
-          post={post}
-          index={i}
-          likePost={likePost}
-          addComment={addComment}
-        />
-      ))}
-    </div>
-  );
-}
-
-function Post({
-  post,
-  index,
-  likePost,
-  addComment
-}: {
-  post: PostType;
-  index: number;
-  likePost: (index: number) => void;
-  addComment: (index: number, comment: string) => void;
-}) {
-  const [commentText, setCommentText] = useState("");
-
-  return (
-    <div
-      style={{
-        border: "1px solid #333",
-        padding: 20,
-        marginTop: 20
-      }}
-    >
-      <h3>Arizona</h3>
-
-      <p>{post.text}</p>
-
-      <button onClick={() => likePost(index)}>
-        ❤️ Like ({post.likes})
-      </button>
-
-      <div style={{ marginTop: 15 }}>
-        <input
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          placeholder="Write a comment..."
-        />
-
-        <button
-          onClick={() => {
-            addComment(index, commentText);
-            setCommentText("");
-          }}
-        >
-          Comment
-        </button>
-
-        {post.comments.map((c, i) => (
-          <p key={i}>💬 {c}</p>
+      <div style={{ marginTop: 40 }}>
+        {posts.map((post) => (
+          <div key={post.id} style={{ marginBottom: 30 }}>
+            <img src={post.image} width="300" />
+            <p>❤️ {post.likes}</p>
+          </div>
         ))}
       </div>
     </div>
